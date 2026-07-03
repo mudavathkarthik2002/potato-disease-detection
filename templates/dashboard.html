@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - PotatoDetect{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container-fluid py-4">
+        <!-- Welcome -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="welcome-card">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h2 class="fw-bold mb-2">
+                                <span class="text-gradient">👋 Welcome back, {{ user.first_name }}!</span>
+                            </h2>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-calendar-alt me-2" style="color: #8B5CF6;"></i>
+                                {{ now.strftime('%A, %B %d, %Y') }}
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                            <a href="{{ url_for('predict') }}" class="btn btn-primary-gradient">
+                                <i class="fas fa-plus me-2"></i>New Detection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card stat-card-primary">
+                    <div class="stat-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="stat-content">
+                        <h6 class="stat-label">Total Detections</h6>
+                        <h3 class="stat-value">{{ stats.total_detections }}</h3>
+                        <span class="stat-change text-success">
+                            <i class="fas fa-arrow-up me-1"></i>{{ stats.growth }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card stat-card-success">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-content">
+                        <h6 class="stat-label">Healthy</h6>
+                        <h3 class="stat-value">{{ stats.healthy }}</h3>
+                        <span class="stat-change text-success">{{ stats.healthy_percent }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card stat-card-warning">
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-content">
+                        <h6 class="stat-label">Early Blight</h6>
+                        <h3 class="stat-value">{{ stats.early_blight }}</h3>
+                        <span class="stat-change text-warning">{{ stats.early_blight_percent }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card stat-card-danger">
+                    <div class="stat-icon"><i class="fas fa-biohazard"></i></div>
+                    <div class="stat-content">
+                        <h6 class="stat-label">Late Blight</h6>
+                        <h3 class="stat-value">{{ stats.late_blight }}</h3>
+                        <span class="stat-change text-danger">{{ stats.late_blight_percent }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="chart-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0" style="color: #8B5CF6;">
+                            <i class="fas fa-chart-bar me-2"></i>Detection Trends
+                        </h5>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary active" data-period="week" style="border-color: rgba(139,92,246,0.3);">Week</button>
+                            <button class="btn btn-outline-primary" data-period="month" style="border-color: rgba(139,92,246,0.3);">Month</button>
+                            <button class="btn btn-outline-primary" data-period="year" style="border-color: rgba(139,92,246,0.3);">Year</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0" style="color: #EC4899;">
+                            <i class="fas fa-chart-pie me-2"></i>Distribution
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0" style="color: #F59E0B;">
+                            <i class="fas fa-clock me-2"></i>Recent Activity
+                        </h5>
+                        <a href="#" class="text-decoration-none" style="color: #8B5CF6;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="color: var(--text-secondary);">
+                                <thead style="background: rgba(255,255,255,0.05);">
+                                    <tr>
+                                        <th style="color: var(--text-muted);">Date</th>
+                                        <th style="color: var(--text-muted);">Image</th>
+                                        <th style="color: var(--text-muted);">Disease</th>
+                                        <th style="color: var(--text-muted);">Confidence</th>
+                                        <th style="color: var(--text-muted);">Status</th>
+                                        <th style="color: var(--text-muted);">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for activity in recent_activities %}
+                                    <tr>
+                                        <td><small class="text-muted">{{ activity.date.strftime('%b %d, %Y') }}</small></td>
+                                        <td><img src="{{ activity.image_url }}" class="activity-thumbnail"></td>
+                                        <td>
+                                            <span class="badge badge-{{ activity.disease_class }}">
+                                                {{ activity.disease }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                                    <div class="progress-bar" style="width: {{ activity.confidence * 100 }}%; background: var(--primary-gradient);"></div>
+                                                </div>
+                                                <span class="small fw-semibold" style="color: #8B5CF6;">{{ (activity.confidence * 100)|round(1) }}%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if activity.status == 'healthy' else 'warning' if activity.status == 'early_blight' else 'danger' }}">
+                                                {{ activity.status|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm" style="background: rgba(139,92,246,0.1); color: #8B5CF6;" onclick="viewDetails('{{ activity.id }}')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+window.chartData = {
+    labels: {{ trend_labels|tojson }},
+    data: {{ trend_data|tojson }}
+};
+window.pieData = {{ pie_data|tojson }};
+</script>
+{% endblock %}

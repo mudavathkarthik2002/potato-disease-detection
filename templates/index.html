@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Home - PotatoDetect{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    AI-Powered Detection
+                </div>
+                
+                <h1 class="mt-3">
+                    Smart Potato Disease
+                    <span class="gradient-text">Detection System</span>
+                </h1>
+                
+                <p class="lead">
+                    Protect your potato crops using our advanced CNN-BiLSTM 
+                    deep learning model with <strong style="color: #8B5CF6;">97% accuracy</strong>.
+                </p>
+                
+                <div class="hero-actions">
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('predict') }}" class="btn btn-primary">
+                        <i class="fas fa-microscope me-2"></i>Start Detection
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">
+                        <i class="fas fa-rocket me-2"></i>Get Started Free
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <div class="hero-stats">
+                    <div>
+                        <div class="stat-number">97%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Images Processed</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Disease Classes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="hero-card">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🥔</div>
+                    <div class="card-title">Potato Disease Detection</div>
+                    <div class="card-subtitle">CNN-BiLSTM Model Analysis</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Model Confidence</span>
+                            <span>97%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4 g-3">
+                        <div class="col-6">
+                            <div style="background: rgba(6, 214, 160, 0.1); border-radius: 12px; padding: 12px; border: 1px solid rgba(6, 214, 160, 0.1);">
+                                <div style="color: #06D6A0; font-size: 1.5rem;">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">Healthy Detected</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background: rgba(255, 107, 203, 0.1); border-radius: 12px; padding: 12px; border: 1px solid rgba(255, 107, 203, 0.1);">
+                                <div style="color: #FF6BCB; font-size: 1.5rem;">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">Real-time Analysis</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

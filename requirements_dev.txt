@@ -1,0 +1,11 @@
+Flask>=2.0
+tensorflow>=2.12
+opencv-python
+numpy
+Pillow
+matplotlib
+scikit-learn
+pandas
+jinja2
+python-dotenv
+gunicorn
